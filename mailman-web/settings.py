@@ -37,7 +37,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('MAILMAN_REST_DEBUG', False)
 
 ADMINS = (
      ('Mailman Suite Admin', 'root@localhost'),
@@ -71,6 +71,7 @@ MAILMAN_ARCHIVER_FROM = (os.environ.get('MAILMAN_HOST_IP', gethostbyname(os.envi
 
 INSTALLED_APPS = []
 DEFAULT_APPS = [
+    'whitenoise.runserver_nostatic',
     'hyperkitty',
     'postorius',
     'django_mailman3',
@@ -113,6 +114,7 @@ MIDDLEWARE = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django_mailman3.middleware.TimezoneMiddleware',
     'postorius.middleware.PostoriusMiddleware',
