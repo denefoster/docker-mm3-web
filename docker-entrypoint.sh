@@ -50,29 +50,6 @@ function check_or_create () {
 # END
 # }
 
-# Disable signup if desired
-
-mkdir /opt/mailman-web-data
-
-if [[ -v DISABLE_ALL_SIGNUPS ]]; then
-    echo "ACCOUNT_ADAPTER = 'django_mailman3.views.user_adapter.DisableSignupAdapter'" >>/opt/mailman-web-data/settings_local.py
-fi
-
-ALLOWED_HOST_ARRAY=('localhost' '127.0.0.1')
-
-if [[ -v ALLOWED_HOSTS ]]; then
-  for host in ${ALLOWED_HOSTS}; do
-      ALLOWED_HOST_ARRAY+=(${host})
-  done
-
-fi
-
-ALL_ALLOW_HOSTS=`join_array ", " "${ALLOWED_HOST_ARRAY[@]}"`
-
-echo "ALLOWED_HOSTS = [ ${ALL_ALLOW_HOSTS} ]" >>/opt/mailman-web-data/settings_local.py
-
-
-
 # SMTP_HOST defaults to the gateway
 if [[ ! -v SMTP_HOST ]]; then
 	export SMTP_HOST=$(/sbin/ip route | awk '/default/ { print $3 }')
@@ -127,6 +104,22 @@ if [[ ! -e /opt/mailman-web-data/logs/uwsgi.log ]]; then
 	touch /opt/mailman-web-data/logs/uwsgi.log
 fi
 
+if [[ -v DISABLE_ALL_SIGNUPS ]]; then
+    echo "ACCOUNT_ADAPTER = 'django_mailman3.views.user_adapter.DisableSignupAdapter'" >>/opt/mailman-web-data/settings_local.py
+fi
+
+ALLOWED_HOST_ARRAY=('localhost' '127.0.0.1')
+
+if [[ -v ALLOWED_HOSTS ]]; then
+  for host in ${ALLOWED_HOSTS}; do
+      ALLOWED_HOST_ARRAY+=(${host})
+  done
+
+fi
+
+ALL_ALLOW_HOSTS=`join_array ", " "${ALLOWED_HOST_ARRAY[@]}"`
+
+echo "ALLOWED_HOSTS = [ ${ALL_ALLOW_HOSTS} ]" >>/opt/mailman-web-data/settings_local.py
 # Check if the settings_local.py file exists, if yes, copy it too.
 if [[ -e /opt/mailman-web-data/settings_local.py ]]; then
 	echo "Copying settings_local.py ..."
