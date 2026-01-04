@@ -86,7 +86,7 @@ spec:
           {{- end }}
           volumeMounts:
             - name: {{ include "postorius.fullname" . }}
-              mountPath: /opt/mailman-web-data/logs
+              mountPath: /opt/mailman-web-data
       volumes:
         - name: {{ include "postorius.fullname" . }}
         {{- if .Values.persistence.enabled }}
