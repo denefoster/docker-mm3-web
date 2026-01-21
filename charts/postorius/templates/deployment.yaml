@@ -76,6 +76,12 @@ spec:
               value: "{{ .Values.postorius.disableSignups }}"
             - name: SERVE_FROM_DOMAIN
               value: {{ .Values.postorius.hostname }}
+            {{- if .Values.postorius.email }}
+            - name: SMTP_HOST
+              value: {{ .Values.postorius.email.host | default "localhost" | quote }}
+            - name: SMTP_PORT
+              value: {{ .Values.postorius.email.port | default 25 | quote }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
